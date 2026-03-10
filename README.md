@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# Telement Test SPA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Что реализовано
 
-Currently, two official plugins are available:
+- Бескоечный список пользователей из публичного REST API
+- Детальный экран пользователя по клику
+- Возврат к списку без потери состояния
+- Явные состояния загрузки, ошибок и повторного запроса.
+- Адаптивный интерфейс под мобильное узкое окно и десктоп
+- Разделение по слоям FSD
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Использованное API
 
-## React Compiler
+Используется [DummyJSON Users](https://dummyjson.com/docs/users):
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Запуск
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
+# or
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Архитектурные решения
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Состояние
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `TanStack Query` отвечает за серверное состояние: загрузку, кэширование, ошибки и повторные запросы
+- Базовый режим списка построен на `useInfiniteQuery` с серверной пагинацией через `limit` и `skip`
+- Состояние списка (`query`, `city`, `sort`, `view`) хранится в URL через `React Router search params`
+- Благодаря этому при переходе на `/users/:id` и возврате назад список восстанавливается в том же состоянии
+
+### Структура
+
+Проект разложен по FSD-слоям:
+
+- `src/app` — провайдеры и роутер
+- `src/pages` — страницы списка, деталей и 404
+- `src/widgets` — крупные части экранов
+- `src/features` — управление фильтрами списка
+- `src/entities` — доменная модель пользователя, API и UI сущности
+- `src/shared` — общий API-клиент, конфиг Query Client и утилиты
+
+### UI
+
+- Базовые интерфейсные элементы взяты из `shadcn/ui`
+- Стилизация построена на `Tailwind CSS`
+- На мобильных экранах фильтры открываются через `Sheet`, на десктопе закреплены в сайдбаре
+- В базовом режиме следующая страница подгружается автоматически через `IntersectionObserver`
+
+## Стек
+
+- `React 19`
+- `TypeScript`
+- `Vite`
+- `Tailwind CSS v4`
+- `shadcn/ui`
+- `TanStack Query`
+- `React Router`
