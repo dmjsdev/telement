@@ -20,7 +20,7 @@ export function UserDetailsPage() {
     enabled: isValidUserId,
   })
 
-  const backHref = useMemo(() => `/${location.search}`, [location.search])
+  const backHref = useMemo(() => `/users${location.search}`, [location.search])
 
   return (
     <UserDetailsPanel

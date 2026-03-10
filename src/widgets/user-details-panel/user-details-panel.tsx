@@ -1,11 +1,13 @@
+import { Link } from 'react-router-dom'
 import type { UseQueryResult } from "@tanstack/react-query";
-import { AlertCircle, RefreshCcw } from "lucide-react";
+import { AlertCircle, ArrowLeft, RefreshCcw } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import type { Post, User } from "@/entities/user/model/types";
 import { UserDetailsCard } from "@/entities/user/ui/user-details-card";
 import { UserDetailsSkeleton } from "@/entities/user/ui/user-details-skeleton";
+import { cn } from "@/lib/utils";
 
 import { UserPostsList } from "./ui/user-posts-list";
 
@@ -17,6 +19,7 @@ type UserDetailsPanelProps = {
 };
 
 export function UserDetailsPanel({
+  backHref,
   isValidUserId,
   postsQuery,
   userQuery,
@@ -38,7 +41,15 @@ export function UserDetailsPanel({
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3 animate-page-enter animate-page-enter-delay-1"></div>
+      <div className="flex flex-wrap items-center gap-3 animate-page-enter animate-page-enter-delay-1">
+        <Link
+          className={cn(buttonVariants({ size: 'sm', variant: 'outline' }))}
+          to={backHref}
+        >
+          <ArrowLeft className="size-4" />
+          Назад к списку
+        </Link>
+      </div>
 
       {userQuery.isLoading ? (
         <div className="animate-page-enter animate-page-enter-delay-1">

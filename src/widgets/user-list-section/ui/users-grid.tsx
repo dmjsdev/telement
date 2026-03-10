@@ -42,13 +42,13 @@ export function UsersGrid({
             <>
               {safeUsers.map((user) => (
                 <Link
-                  className={cn(
-                    buttonVariants({ variant: 'ghost' }),
-                    'flex h-full w-full min-w-0 self-stretch rounded-3xl border-0 p-0 text-left hover:bg-transparent',
-                  )}
-                  key={user.id}
-                  to={`/users/${user.id}${search}`}
-                >
+              className={cn(
+                buttonVariants({ variant: 'ghost' }),
+                'flex h-full w-full min-w-0 self-stretch rounded-3xl border-0 p-0 text-left hover:bg-transparent',
+              )}
+              key={user.id}
+              to={`/users/${user.id}${search}`}
+            >
                   <UserCard compact={filters.view === 'compact'} user={user} />
                 </Link>
               ))}
